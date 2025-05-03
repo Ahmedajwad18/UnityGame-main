@@ -23,7 +23,7 @@ public class EnemyHealth : MonoBehaviour
         if (currentHealth <= 0f)
         {
             if (enemyController != null)
-                enemyController.Die();
+                enemyController.OnEnemyDeath();
         }
         else
         {

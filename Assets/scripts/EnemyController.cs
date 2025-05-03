@@ -325,7 +325,7 @@ public class EnemyController : MonoBehaviour
 
         if (health <= 0)
         {
-            Die();
+            OnEnemyDeath();
         }
         else if (currentState == EnemyState.Patrol)
         {
@@ -333,47 +333,19 @@ public class EnemyController : MonoBehaviour
         }
     }
 
-  public void Die()
-{
-    PlayDeathSound();
-    animator.SetTrigger(DieParam);
-
-    // Disable AI
-    navMeshAgent.enabled = false;
-    enabled = false;
-
-    // Disable animator so physics can take over
-    if (animator != null)
-        animator.enabled = false;
-
-    // Add Rigidbody if not already
-    Rigidbody rb = GetComponent<Rigidbody>();
-    if (rb == null)
-        rb = gameObject.AddComponent<Rigidbody>();
-
-    // Add Collider if not already
-    Collider col = GetComponent<Collider>();
-    if (col == null)
-        col = gameObject.AddComponent<CapsuleCollider>();
-
-    // Apply explosion force
-    Vector3 explosionDirection = (transform.position - Camera.main.transform.position).normalized + Vector3.up;
-    rb.AddForce(explosionDirection * 500f);
-
-    // 🟩 Add points to player
-    PlayerStats stats = FindObjectOfType<PlayerStats>();
-    if (stats)
+public void OnEnemyDeath()
     {
-        stats.AddPoints(10);
+        PlayDeathSound();
+        animator.SetTrigger(DieParam);
+        
+        // Disable movement and this controller
+        navMeshAgent.enabled = false;
+        enabled = false;
     }
-
-    // Clean up after delay
-    Destroy(gameObject, 5f);
-}
-
 
     // ==== ANIMATION EVENT METHODS ====
     // Call these from animation timelines
     public void AE_Footstep() => PlayFootstepSound();
     public void AE_AttackHit() => DealDamage();
 }
+
